@@ -46,6 +46,24 @@ function drawAccessory(target = window, faceScaleFactor = 1.0) { // Added faceSc
     case "eyebrows":
       _drawEyebrows(state, target, faceScaleFactor);
       break;
+    case "thickEyebrows":
+      _drawThickEyebrows(state, target, faceScaleFactor);
+      break;
+    case "thinEyebrows":
+      _drawThinEyebrows(state, target, faceScaleFactor);
+      break;
+    case "unibrow":
+      _drawUnibrow(state, target, faceScaleFactor);
+      break;
+    case "raisedEyebrows":
+      _drawRaisedEyebrows(state, target, faceScaleFactor);
+      break;
+    case "angryEyebrows":
+      _drawAngryEyebrows(state, target, faceScaleFactor);
+      break;
+    case "surprisedEyebrows":
+      _drawSurprisedEyebrows(state, target, faceScaleFactor);
+      break;
     case "ribbon":
       _drawRibbon(state, target, faceScaleFactor);
       break;
@@ -612,6 +630,146 @@ function _drawRibbon(state, target = window, faceScaleFactor = 1.0) {
     target.pop();
 }
 
+
+// --- New Eyebrow Accessory Drawing Functions ---
+
+function _drawThickEyebrows(state, target = window, faceScaleFactor = 1.0) {
+  target.push();
+  const base = {eyeOffsetX: 48, eyeOffsetY: -12, eyebrowOffsetY: -18, eyebrowLength: 36, strokeW: 10};
+  const eyeOffsetX = base.eyeOffsetX * faceScaleFactor;
+  const eyebrowY = (base.eyeOffsetY + base.eyebrowOffsetY) * faceScaleFactor;
+  const halfLen = (base.eyebrowLength / 2) * faceScaleFactor;
+  const strokeW = Math.max(3, base.strokeW * faceScaleFactor);
+  target.strokeWeight(strokeW);
+  target.stroke(30, 30, 30);
+  target.strokeCap(target.ROUND);
+  // Left
+  target.push();
+  target.translate(-eyeOffsetX, eyebrowY);
+  target.rotate(-0.12);
+  target.line(-halfLen, 0, halfLen, 0);
+  target.pop();
+  // Right
+  target.push();
+  target.translate(eyeOffsetX, eyebrowY);
+  target.rotate(0.12);
+  target.line(-halfLen, 0, halfLen, 0);
+  target.pop();
+  target.pop();
+}
+
+function _drawThinEyebrows(state, target = window, faceScaleFactor = 1.0) {
+  target.push();
+  const base = {eyeOffsetX: 48, eyeOffsetY: -12, eyebrowOffsetY: -18, eyebrowLength: 34, strokeW: 2};
+  const eyeOffsetX = base.eyeOffsetX * faceScaleFactor;
+  const eyebrowY = (base.eyeOffsetY + base.eyebrowOffsetY) * faceScaleFactor;
+  const halfLen = (base.eyebrowLength / 2) * faceScaleFactor;
+  const strokeW = Math.max(1, base.strokeW * faceScaleFactor);
+  target.strokeWeight(strokeW);
+  target.stroke(30, 30, 30);
+  target.strokeCap(target.ROUND);
+  // Left
+  target.push();
+  target.translate(-eyeOffsetX, eyebrowY);
+  target.rotate(-0.10);
+  target.line(-halfLen, 0, halfLen, 0);
+  target.pop();
+  // Right
+  target.push();
+  target.translate(eyeOffsetX, eyebrowY);
+  target.rotate(0.10);
+  target.line(-halfLen, 0, halfLen, 0);
+  target.pop();
+  target.pop();
+}
+
+function _drawUnibrow(state, target = window, faceScaleFactor = 1.0) {
+  target.push();
+  const base = {eyeOffsetY: -12, eyebrowOffsetY: -18, eyebrowLength: 98, strokeW: 7};
+  const eyebrowY = (base.eyeOffsetY + base.eyebrowOffsetY) * faceScaleFactor;
+  const halfLen = (base.eyebrowLength / 2) * faceScaleFactor;
+  const strokeW = Math.max(2, base.strokeW * faceScaleFactor);
+  target.strokeWeight(strokeW);
+  target.stroke(30, 30, 30);
+  target.strokeCap(target.ROUND);
+  target.line(-halfLen, eyebrowY, halfLen, eyebrowY);
+  target.pop();
+}
+
+function _drawRaisedEyebrows(state, target = window, faceScaleFactor = 1.0) {
+  target.push();
+  const base = {eyeOffsetX: 48, eyeOffsetY: -12, eyebrowOffsetY: -30, eyebrowLength: 30, strokeW: 5};
+  const eyeOffsetX = base.eyeOffsetX * faceScaleFactor;
+  const eyebrowY = (base.eyeOffsetY + base.eyebrowOffsetY) * faceScaleFactor;
+  const halfLen = (base.eyebrowLength / 2) * faceScaleFactor;
+  const strokeW = Math.max(1, base.strokeW * faceScaleFactor);
+  target.strokeWeight(strokeW);
+  target.stroke(30, 30, 30);
+  target.strokeCap(target.ROUND);
+  // Left
+  target.push();
+  target.translate(-eyeOffsetX, eyebrowY);
+  target.rotate(0.25);
+  target.line(-halfLen, 0, halfLen, 0);
+  target.pop();
+  // Right
+  target.push();
+  target.translate(eyeOffsetX, eyebrowY);
+  target.rotate(-0.25);
+  target.line(-halfLen, 0, halfLen, 0);
+  target.pop();
+  target.pop();
+}
+
+function _drawAngryEyebrows(state, target = window, faceScaleFactor = 1.0) {
+  target.push();
+  const base = {eyeOffsetX: 48, eyeOffsetY: -12, eyebrowOffsetY: -15, eyebrowLength: 32, strokeW: 6};
+  const eyeOffsetX = base.eyeOffsetX * faceScaleFactor;
+  const eyebrowY = (base.eyeOffsetY + base.eyebrowOffsetY) * faceScaleFactor;
+  const halfLen = (base.eyebrowLength / 2) * faceScaleFactor;
+  const strokeW = Math.max(2, base.strokeW * faceScaleFactor);
+  target.strokeWeight(strokeW);
+  target.stroke(30, 30, 30);
+  target.strokeCap(target.ROUND);
+  // Left
+  target.push();
+  target.translate(-eyeOffsetX, eyebrowY);
+  target.rotate(-0.45);
+  target.line(-halfLen, 0, halfLen, 0);
+  target.pop();
+  // Right
+  target.push();
+  target.translate(eyeOffsetX, eyebrowY);
+  target.rotate(0.45);
+  target.line(-halfLen, 0, halfLen, 0);
+  target.pop();
+  target.pop();
+}
+
+function _drawSurprisedEyebrows(state, target = window, faceScaleFactor = 1.0) {
+  target.push();
+  const base = {eyeOffsetX: 48, eyeOffsetY: -12, eyebrowOffsetY: -22, eyebrowLength: 30, strokeW: 4};
+  const eyeOffsetX = base.eyeOffsetX * faceScaleFactor;
+  const eyebrowY = (base.eyeOffsetY + base.eyebrowOffsetY) * faceScaleFactor;
+  const halfLen = (base.eyebrowLength / 2) * faceScaleFactor;
+  const strokeW = Math.max(1, base.strokeW * faceScaleFactor);
+  target.strokeWeight(strokeW);
+  target.stroke(30, 30, 30);
+  target.strokeCap(target.ROUND);
+  // Left
+  target.push();
+  target.translate(-eyeOffsetX, eyebrowY);
+  target.rotate(0.35);
+  target.line(-halfLen, 0, halfLen, 0);
+  target.pop();
+  // Right
+  target.push();
+  target.translate(eyeOffsetX, eyebrowY);
+  target.rotate(-0.35);
+  target.line(-halfLen, 0, halfLen, 0);
+  target.pop();
+  target.pop();
+}
 
 // --- Exports ---
 window.drawAccessory = drawAccessory;

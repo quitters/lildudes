@@ -63,7 +63,7 @@
     <!-- Loading Indicator -->
     <div id="loading-container">
         <div class="loading-mound"></div>
-        <div class="loading-text">Generating your unique Mound Mascot...</div>
+        <div class="loading-text">Generating Li'l Dude...</div>
         <div class="loading-progress">
             <div class="loading-progress-bar" id="loading-progress-bar"></div>
         </div>
@@ -106,6 +106,19 @@
                 <select id="debug-background"></select><br>
                 <label for="debug-pattern">Mound Pattern:</label>
                 <select id="debug-pattern"></select><br>
+                <label for="debug-eye-type">Eye Type:</label>
+                <select id="debug-eye-type">
+  <option value="classic">Classic</option>
+  <option value="sleepy">Sleepy</option>
+  <option value="joyful">Joyful</option>
+  <option value="wideEyes">Wide Eyes</option>
+  <option value="tallEyes">Tall Eyes</option>
+  <option value="worried">Worried</option>
+  <option value="derp">Derp</option>
+  <option value="pixel">Pixel</option>
+  <option value="triangle">Triangle</option>
+  <option value="square">Square</option>
+</select><br>
                 <input type="checkbox" id="debug-shiny"> <label for="debug-shiny">Shiny/Shimmer</label><br>
                 <input type="checkbox" id="debug-special-color"> <label for="debug-special-color">Special Color</label><br>
                 <input type="checkbox" id="debug-mystery-eyes"> <label for="debug-mystery-eyes">Mystery Eyes</label><br>
@@ -116,7 +129,22 @@
             <div>
                 <strong>Accessories/Effects:</strong><br>
                 <label for="debug-accessory">Accessory:</label>
-                <select id="debug-accessory"></select><br>
+                <select id="debug-accessory">
+  <option value="none">None</option>
+  <option value="hat">Hat</option>
+  <option value="bow">Bow</option>
+  <option value="glasses">Glasses</option>
+  <option value="crown">Crown</option>
+  <option value="halo">Halo</option>
+  <option value="eyebrows">Eyebrows</option>
+  <option value="thickEyebrows">Thick Eyebrows</option>
+  <option value="thinEyebrows">Thin Eyebrows</option>
+  <option value="unibrow">Unibrow</option>
+  <option value="raisedEyebrows">Raised Eyebrows</option>
+  <option value="angryEyebrows">Angry Eyebrows</option>
+  <option value="surprisedEyebrows">Surprised Eyebrows</option>
+  <option value="ribbon">Ribbon</option>
+</select><br>
                 <input type="checkbox" id="debug-glow"> <label for="debug-glow">Glow</label><br>
                 <input type="checkbox" id="debug-cursed"> <label for="debug-cursed">Cursed</label><br>
             </div>

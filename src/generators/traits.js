@@ -164,21 +164,42 @@ function generateTraits() {
   hasAccessory = $fx.rand() < adjustedAccessoryChance; // Use $fx.rand() for chance
 
   if (hasAccessory) {
-    const accessories = ["hat", "bow", "glasses", "crown", "halo", "eyebrows", "ribbon"];
-    // Weighted accessory selection based on palette
-    let accessoryWeights = { hat: 1, bow: 1, glasses: 1, crown: 1, halo: 1, eyebrows: 1, ribbon: 1 }; // Default equal weights
+    const accessories = [
+      "hat", "bow", "glasses", "crown", "halo", "eyebrows", "ribbon",
+      "thickEyebrows", "thinEyebrows", "unibrow", "raisedEyebrows", "angryEyebrows", "surprisedEyebrows", "none"
+    ];
+    // Default equal weights for all accessories including new eyebrow types
+    let accessoryWeights = {
+      hat: 1, bow: 1, glasses: 1, crown: 1, halo: 1, eyebrows: 1, ribbon: 1,
+      thickEyebrows: 1, thinEyebrows: 1, unibrow: 1, raisedEyebrows: 1, angryEyebrows: 1, surprisedEyebrows: 1, none: 0.5
+    };
 
-    // Palette influences accessory type
+    // Palette influences accessory type (including new eyebrow types)
     if (palette.name === "forest" || palette.name === "mint") {
-      accessoryWeights = { hat: 3, bow: 1, glasses: 1, crown: 1, halo: 5, eyebrows: 4, ribbon: 1 }; // Favor nature/mystical: halo, hat, eyebrows
+      accessoryWeights = {
+        hat: 3, bow: 1, glasses: 1, crown: 1, halo: 5, eyebrows: 2, ribbon: 1,
+        thickEyebrows: 3, thinEyebrows: 1, unibrow: 1, raisedEyebrows: 2, angryEyebrows: 1, surprisedEyebrows: 2, none: 0.5
+      };
     } else if (palette.name === "moonlight" || palette.name === "twilight") {
-      accessoryWeights = { hat: 1, bow: 1, glasses: 3, crown: 4, halo: 6, eyebrows: 1, ribbon: 1 }; // Favor mystical: halo, crown, glasses
+      accessoryWeights = {
+        hat: 1, bow: 1, glasses: 3, crown: 4, halo: 6, eyebrows: 1, ribbon: 1,
+        thickEyebrows: 1, thinEyebrows: 2, unibrow: 1, raisedEyebrows: 1, angryEyebrows: 1, surprisedEyebrows: 2, none: 0.5
+      };
     } else if (palette.name === "candyfloss" || palette.name === "bubblegum" || palette.name === "pastel") {
-      accessoryWeights = { hat: 1, bow: 5, glasses: 2, crown: 2, halo: 1, eyebrows: 1, ribbon: 6 }; // Favor cute: bow, ribbon
+      accessoryWeights = {
+        hat: 1, bow: 5, glasses: 2, crown: 2, halo: 1, eyebrows: 1, ribbon: 6,
+        thickEyebrows: 1, thinEyebrows: 2, unibrow: 0.5, raisedEyebrows: 2, angryEyebrows: 0.5, surprisedEyebrows: 2, none: 0.5
+      };
     } else if (palette.name === "cursed") {
-      accessoryWeights = { hat: 2, bow: 1, glasses: 2, crown: 1, halo: 0.5, eyebrows: 6, ribbon: 0.5 }; // Favor unsettling: eyebrows
+      accessoryWeights = {
+        hat: 2, bow: 1, glasses: 2, crown: 1, halo: 0.5, eyebrows: 2, ribbon: 0.5,
+        thickEyebrows: 6, thinEyebrows: 1, unibrow: 3, raisedEyebrows: 1, angryEyebrows: 4, surprisedEyebrows: 1, none: 0.5
+      };
     } else if (palette.name === "golden") {
-      accessoryWeights = { hat: 1, bow: 1, glasses: 1, crown: 8, halo: 4, eyebrows: 0.5, ribbon: 0.5 }; // Favor royal: crown, halo
+      accessoryWeights = {
+        hat: 1, bow: 1, glasses: 1, crown: 8, halo: 4, eyebrows: 0.5, ribbon: 0.5,
+        thickEyebrows: 1, thinEyebrows: 1, unibrow: 0.5, raisedEyebrows: 1, angryEyebrows: 1, surprisedEyebrows: 1, none: 0.5
+      };
     }
 
     // TODO: Ensure fxWeightedRandomSelect is defined and uses $fx.rand()
@@ -310,6 +331,10 @@ function generateTraits() {
   // --- 11. Calculate Mound Position ---
   const moundPosition = calculateMoundPosition(moundShape, personalityType, moundWidthFactor);
 
+  // --- 12. Eye Type (new trait, mostly classic, sometimes new)
+  const eyeTypeList = ['classic', 'sleepy', 'joyful', 'wideEyes'];
+  const eyeTypeWeights = { classic: 0.7, sleepy: 0.1, joyful: 0.1, wideEyes: 0.1 };
+  const eyeType = fxWeightedRandomSelect(eyeTypeWeights) || 'classic';
 
   // --- Update State ---
   // Use setState to replace the entire state related to generated traits
@@ -350,6 +375,7 @@ function generateTraits() {
     isCursed,
     palette,
     personalityType,
+    eyeType, // NEW: add eyeType to state
     moundAnimationType,
     animationIntensity,
     backgroundType,

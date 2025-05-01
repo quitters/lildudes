@@ -21,7 +21,7 @@ function drawFace(emote, frameCountInEmote, target = window) { // ADDED TARGET P
       console.warn("Cannot draw face: State, palette, or target width missing.");
       return; // Cannot draw without state/palette or target dimensions
   }
-  const { personalityType, hasMysteryEyes, initialMood } = state;
+  const { personalityType, hasMysteryEyes, initialMood, eyeType = 'classic' } = state;
 
   // --- Calculate Scale Factor ---
   // Assume original design targeted a 600px wide canvas. Scale relative to current width.
@@ -178,7 +178,7 @@ function drawFace(emote, frameCountInEmote, target = window) { // ADDED TARGET P
 
   // --- Draw Standard Features (if not handled by specific emote) ---
   if (drawStandardFeatures) {
-    _drawEyes(eyeOffsetX, eyeOffsetY, currentEyeW, currentEyeH, currentEyeH, target, strokeWeight);
+    _drawEyes(eyeOffsetX, eyeOffsetY, currentEyeW, currentEyeH, currentEyeH, target, strokeWeight, eyeType, faceScaleFactor);
     _drawCheeks(state, cheekOffsetX, cheekOffsetY, currentCheekSize, target);
     _drawMouth(mouthOffsetY, mouthWidth, currentMouthCurve, target, strokeWeight);
   }
@@ -195,14 +195,130 @@ function drawFace(emote, frameCountInEmote, target = window) { // ADDED TARGET P
 
 // --- Private Helper Functions (Modified for Scaling) ---
 
-/** Draws the eyes. Can handle winking one eye. */
-function _drawEyes(offsetX, offsetY, width, height, leftEyeHeight = height, target, strokeWeight) {
-  target.fill(0); // Eyes are black
-  target.noStroke();
-  // Left eye (potentially different height for wink)
-  target.ellipse(-offsetX, offsetY, width, leftEyeHeight);
-  // Right eye
-  target.ellipse(offsetX, offsetY, width, height);
+/** Draws the eyes. Handles different eye types. */
+function _drawEyes(offsetX, offsetY, width, height, leftEyeHeight = height, target, strokeWeight, eyeType = 'classic', faceScaleFactor = 1) {
+  switch (eyeType) {
+    case 'tallEyes': {
+      // Tall ovals
+      const tallEyeSizeH = height * 1.4;
+      const tallEyeSizeW = width * 0.8;
+      target.fill(0);
+      target.noStroke();
+      target.ellipse(-offsetX, offsetY, tallEyeSizeW, tallEyeSizeH);
+      target.ellipse(offsetX, offsetY, tallEyeSizeW, tallEyeSizeH);
+      break;
+    }
+    case 'worried': {
+      // Downward arcs, similar to sad
+      const worriedEyeY = offsetY + height * 0.1;
+      const worriedEyeW = width;
+      const worriedEyeH = height * 0.5;
+      target.fill(0);
+      target.noStroke();
+      target.arc(-offsetX, worriedEyeY, worriedEyeW, worriedEyeH, 0, Math.PI, 'chord');
+      target.arc(offsetX, worriedEyeY, worriedEyeW, worriedEyeH, 0, Math.PI, 'chord');
+      break;
+    }
+    case 'derp': {
+      // One big, one small/offset
+      const derpEyeBigSize = (width + height) / 2 * 1.1;
+      const derpEyeSmallSize = (width + height) / 2 * 0.6;
+      const derpEyeSmallOffsetY = offsetY - height * 0.2;
+      target.fill(0);
+      target.noStroke();
+      target.ellipse(-offsetX, offsetY, derpEyeBigSize, derpEyeBigSize);
+      target.ellipse(offsetX, derpEyeSmallOffsetY, derpEyeSmallSize, derpEyeSmallSize);
+      break;
+    }
+    case 'pixel': {
+      // Pixel block eyes
+      const pixelEyeW = width;
+      const pixelEyeH = height;
+      const numPixelsW = 4;
+      const pixelSizeW = pixelEyeW / numPixelsW;
+      const numPixelsH = Math.round(pixelEyeH / pixelSizeW);
+      const pixelSizeH = pixelEyeH / numPixelsH;
+      const actualPixelEyeH = numPixelsH * pixelSizeH;
+      target.fill(0);
+      target.noStroke();
+      for (let i = 0; i < numPixelsW; i++) {
+        for (let j = 0; j < numPixelsH; j++) {
+          target.rect(-offsetX - pixelEyeW/2 + i*pixelSizeW, offsetY - actualPixelEyeH/2 + j*pixelSizeH, pixelSizeW, pixelSizeH);
+          target.rect(offsetX - pixelEyeW/2 + i*pixelSizeW, offsetY - actualPixelEyeH/2 + j*pixelSizeH, pixelSizeW, pixelSizeH);
+        }
+      }
+      break;
+    }
+    case 'triangle': {
+      // Solid triangles
+      const triEyeSizeW = width * 1.2;
+      const triEyeSizeH = height * 1.2;
+      const triEyeY = offsetY;
+      target.fill(0);
+      target.noStroke();
+      target.triangle(-offsetX, triEyeY - triEyeSizeH / 2, -offsetX - triEyeSizeW / 2, triEyeY + triEyeSizeH / 2, -offsetX + triEyeSizeW / 2, triEyeY + triEyeSizeH / 2);
+      target.triangle(offsetX, triEyeY - triEyeSizeH / 2, offsetX - triEyeSizeW / 2, triEyeY + triEyeSizeH / 2, offsetX + triEyeSizeW / 2, triEyeY + triEyeSizeH / 2);
+      break;
+    }
+    case 'square': {
+      // Solid squares
+      const sqEyeSize = (width + height) / 2;
+      const sqEyeY = offsetY;
+      target.fill(0);
+      target.noStroke();
+      target.rect(-offsetX - sqEyeSize / 2, sqEyeY - sqEyeSize / 2, sqEyeSize, sqEyeSize);
+      target.rect(offsetX - sqEyeSize / 2, sqEyeY - sqEyeSize / 2, sqEyeSize, sqEyeSize);
+      break;
+    }
+    case 'sleepy': {
+      // Eyes as horizontal lines/rects
+      const sleepyEyeY = offsetY + height * 0.5;
+      const sleepyEyeLength = width * 1.1;
+      const sleepyEyeThickness = height * 0.2;
+      target.fill(0);
+      target.noStroke();
+      // Left
+      target.rect(-offsetX - sleepyEyeLength / 2, sleepyEyeY - sleepyEyeThickness / 2, sleepyEyeLength, sleepyEyeThickness);
+      // Right
+      target.rect(offsetX - sleepyEyeLength / 2, sleepyEyeY - sleepyEyeThickness / 2, sleepyEyeLength, sleepyEyeThickness);
+      break;
+    }
+    case 'joyful': {
+      // Eyes as high-positioned dots/ovals
+      const joyfulEyeRadius = Math.sqrt(width * height) * 0.4;
+      const joyfulEyeY = offsetY - height * 0.4;
+      target.fill(0);
+      target.noStroke();
+      // Left
+      target.ellipse(-offsetX, joyfulEyeY, joyfulEyeRadius, joyfulEyeRadius);
+      // Right
+      target.ellipse(offsetX, joyfulEyeY, joyfulEyeRadius, joyfulEyeRadius);
+      break;
+    }
+    case 'wideEyes': {
+      // Eyes as wide circles
+      const wideEyeBaseSize = (width + height) / 2;
+      const wideEyeSize = wideEyeBaseSize * 1.3;
+      target.fill(0);
+      target.noStroke();
+      // Left
+      target.ellipse(-offsetX, offsetY, wideEyeSize, wideEyeSize);
+      // Right
+      target.ellipse(offsetX, offsetY, wideEyeSize, wideEyeSize);
+      break;
+    }
+    case 'classic':
+    default: {
+      // Eyes as tall ellipses (original v24)
+      target.fill(0);
+      target.noStroke();
+      // Left eye (potentially different height for wink)
+      target.ellipse(-offsetX, offsetY, width, leftEyeHeight);
+      // Right eye
+      target.ellipse(offsetX, offsetY, width, height);
+      break;
+    }
+  }
 }
 
 /** Draws the cheeks using palette color. */

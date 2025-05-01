@@ -13,6 +13,67 @@
 let buttonsInitiallyHidden = true;
 // --- End Add --- 
 
+// --- Eye Type Debug Dropdown Logic ---
+const EYE_TYPES = [
+  { value: 'classic', label: 'Classic' },
+  { value: 'sleepy', label: 'Sleepy' },
+  { value: 'joyful', label: 'Joyful' },
+  { value: 'wideEyes', label: 'Wide Eyes' },
+  { value: 'tallEyes', label: 'Tall Eyes' },
+  { value: 'worried', label: 'Worried' },
+  { value: 'derp', label: 'Derp' },
+  { value: 'pixel', label: 'Pixel' },
+  { value: 'triangle', label: 'Triangle' },
+  { value: 'square', label: 'Square' }
+];
+
+function updateEyeTypeDropdownFromState() {
+  const dropdown = document.getElementById('debug-eye-type');
+  if (!dropdown || typeof getState !== 'function') return;
+  const state = getState();
+  dropdown.value = state.eyeType || 'classic';
+}
+
+function handleEyeTypeDropdownChange(e) {
+  if (typeof updateState !== 'function') return;
+  updateState('eyeType', e.target.value);
+  // Optionally, force a redraw or re-render if needed
+  if (typeof redraw === 'function') redraw();
+}
+
+function setupEyeTypeDropdown() {
+  const dropdown = document.getElementById('debug-eye-type');
+  if (!dropdown) return;
+  // Populate dropdown (if not already)
+  if (dropdown.children.length !== EYE_TYPES.length) {
+    dropdown.innerHTML = '';
+    EYE_TYPES.forEach(opt => {
+      const option = document.createElement('option');
+      option.value = opt.value;
+      option.textContent = opt.label;
+      dropdown.appendChild(option);
+    });
+  }
+  updateEyeTypeDropdownFromState();
+  dropdown.addEventListener('change', handleEyeTypeDropdownChange);
+}
+
+// Hook into debug panel setup
+function initDebugEyeTypeControl() {
+  setupEyeTypeDropdown();
+  // Update dropdown if state changes (optional: add observer)
+  // If you have a state observer system, hook here
+}
+
+// Patch into existing debug panel init logic
+if (typeof window !== 'undefined') {
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(initDebugEyeTypeControl, 0);
+  } else {
+    document.addEventListener('DOMContentLoaded', initDebugEyeTypeControl);
+  }
+}
+
 // --- Global Buffer Storage ---
 let moundTextureBuffer = null;
 
