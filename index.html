@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mound Mascot [fxhash]</title>
+
+    <!-- FXHASH & P5JS -->
+    <script src="fxhash.js"></script>
+    <script src="p5.min.js"></script>
+
+    <!-- Base Libraries -->
+    <script src="lib/utils.js"></script>
+    <script src="lib/errorHandling.js"></script>
+
+    <!-- Core Systems -->
+    <script src="src/core/state.js"></script>
+    <script src="src/core/config.js"></script>
+    <script src="src/core/performance.js"></script>
+    <script src="src/core/logging.js"></script>
+    <script src="src/core/layeredCanvas.js"></script><!-- Layered canvas optimization -->
+
+    <!-- Generators (depend on core, utils) -->
+    <script src="src/generators/colors.js"></script>
+    <script src="src/generators/rarity.js"></script>
+    <script src="src/generators/mound.js"></script> <!-- Defines mound shape, needed by traits -->
+    <script src="src/generators/traits.js"></script> <!-- Generates main traits -->
+    <script src="src/generators/validation.js"></script> <!-- Validates traits -->
+
+    <!-- Animation (depend on core, utils, easing) -->
+    <script src="src/animation/easing.js"></script>
+    <script src="src/animation/emotes.js"></script>
+    <script src="src/animation/idle.js"></script>
+    <script src="src/animation/mound.js"></script> <!-- Animates mound shape -->
+
+    <!-- Effects (depend on core, utils) -->
+    <script src="src/effects/particles.js"></script>
+    <script src="src/effects/seasonal.js"></script>
+
+    <!-- Rendering (depend on core, utils, generators, effects) -->
+    <script src="src/rendering/accessories.js"></script>
+    <script src="src/rendering/backgroundManager.js"></script> <!-- Unified background drawing -->
+    <script src="src/rendering/bufferManager.js"></script> <!-- Optional buffer management -->
+    <script src="src/rendering/effects.js"></script> <!-- Draws glow, shimmer, cursed -->
+    <script src="src/rendering/face.js"></script>
+    <script src="src/rendering/mound.js"></script> <!-- Draws mound base/texture/pattern -->
+
+    <!-- Interaction (depend on core, utils, animation, effects, rendering) -->
+    <script src="src/interaction/feedback.js"></script>
+    <script src="src/interaction/memory.js"></script>
+    <script src="src/interaction/backgroundShowcase.js"></script> <!-- Showcase logic -->
+    <script src="src/interaction/inputs.js"></script> <!-- Main input handler -->
+
+    <!-- Main Entry Point (Must be last) -->
+    <script src="src/index.js"></script>
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- p5.js canvas will be created here -->
+
+    <!-- Loading Indicator -->
+    <div id="loading-container">
+        <div class="loading-mound"></div>
+        <div class="loading-text">Generating your unique Mound Mascot...</div>
+        <div class="loading-progress">
+            <div class="loading-progress-bar" id="loading-progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- Debug Interface -->
+    <button class="debug-button" id="debug-button" title="View Traits (D)">Traits</button>
+    <div class="debug-panel" id="debug-panel">
+        <button class="debug-close" id="debug-close" title="Close">×</button>
+        <div id="debug-content" class="debug-panel-content">
+            <!-- Content populated by JS -->
+            <!-- Core Properties -->
+            <div>
+                <strong>Core Properties:</strong><br>
+                <label for="debug-shape">Shape:</label>
+                <select id="debug-shape">
+                    <!-- Options populated by JS, but add placeholders or default -->
+                    <option value="normal">Normal</option>
+                    <option value="tall">Tall</option>
+                    <option value="asymmetric">Asymmetric</option>
+                    <option value="skinnyTall">Skinny & Tall</option> <!-- Added -->
+                    <option value="shortWide">Short & Wide</option>
+                    <option value="shortSkinny">Short & Skinny</option>
+                    <option value="veryShortWide">Very Short & Wide</option>
+                    <option value="tallVeryThin">Tall & Very Thin</option>
+                </select><br>
+                <label for="debug-personality">Personality:</label>
+                <select id="debug-personality">
+                    <!-- Options populated by JS -->
+                </select><br>
+            </div>
+            <hr>
+
+            <!-- Appearance -->
+            <div>
+                <strong>Appearance:</strong><br>
+                <label for="debug-color-theme">Color Theme:</label>
+                <select id="debug-color-theme"></select><br>
+                <label for="debug-background">Background:</label>
+                <select id="debug-background"></select><br>
+                <label for="debug-pattern">Mound Pattern:</label>
+                <select id="debug-pattern"></select><br>
+                <input type="checkbox" id="debug-shiny"> <label for="debug-shiny">Shiny/Shimmer</label><br>
+                <input type="checkbox" id="debug-special-color"> <label for="debug-special-color">Special Color</label><br>
+                <input type="checkbox" id="debug-mystery-eyes"> <label for="debug-mystery-eyes">Mystery Eyes</label><br>
+            </div>
+            <hr>
+
+            <!-- Accessories/Effects -->
+            <div>
+                <strong>Accessories/Effects:</strong><br>
+                <label for="debug-accessory">Accessory:</label>
+                <select id="debug-accessory"></select><br>
+                <input type="checkbox" id="debug-glow"> <label for="debug-glow">Glow</label><br>
+                <input type="checkbox" id="debug-cursed"> <label for="debug-cursed">Cursed</label><br>
+            </div>
+            <hr>
+
+            <!-- Animation -->
+            <div>
+                <strong>Animation:</strong><br>
+                <label for="debug-anim-type">Type:</label>
+                <select id="debug-anim-type"></select><br>
+                <label for="debug-anim-intensity">Intensity:</label>
+                <input type="range" id="debug-anim-intensity" min="0" max="2" step="0.1" value="1">
+                <span id="debug-anim-intensity-value">1.0</span><br> <!-- To display the value -->
+            </div>
+            <hr>
+
+            <!-- Seasonal -->
+            <div>
+                <strong>Seasonal:</strong><br>
+                <label for="debug-season">Season Override:</label>
+                <select id="debug-season">
+                    <option value="auto">Auto Detect</option>
+                    <option value="spring">Spring</option>
+                    <option value="summer">Summer</option>
+                    <option value="autumn">Autumn</option>
+                    <option value="winter">Winter</option>
+                </select><br>
+            </div>
+        </div>
+        <button id="close-debug-panel" class="debug-panel-close-button">Close</button>
+    </div>
+
+    <!-- Controls Help -->
+    <button class="show-controls-button" id="show-controls-button" title="Show controls">?</button>
+    <div class="controls-help controls-hidden" id="controls-help">
+        <div class="controls-help-title">Keyboard Controls</div>
+        <div class="controls-help-item"><span><span class="controls-help-key">1</span> Neutral</span></div>
+        <div class="controls-help-item"><span><span class="controls-help-key">2</span> Frown</span></div>
+        <div class="controls-help-item"><span><span class="controls-help-key">3</span> Sad</span></div>
+        <div class="controls-help-item"><span><span class="controls-help-key">4</span> Happy</span></div>
+        <div class="controls-help-item"><span><span class="controls-help-key">5</span> V Happy</span></div>
+        <div class="controls-help-item"><span><span class="controls-help-key">6</span> Surprised</span></div>
+        <div class="controls-help-item"><span><span class="controls-help-key">7</span> Sleepy</span></div>
+        <div class="controls-help-item"><span><span class="controls-help-key">8</span> Special</span></div>
+        <div class="controls-help-item"><span><span class="controls-help-key">D</span> Debug Info</span></div>
+        <div class="controls-help-item"><span><span class="controls-help-key">B</span> BG Showcase</span></div>
+        <div class="controls-help-item"><span><span class="controls-help-key">R</span> Regenerate</span></div>
+        <div class="controls-help-item"><span><span class="controls-help-key">S</span> Save PNG</span></div>
+        <div class="controls-help-item"><span><span class="controls-help-key">P</span> Save Preview</span></div>
+    </div>
+
+</body>
+</html>
